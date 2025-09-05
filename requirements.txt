@@ -1,0 +1,6 @@
+Flask
+waitress
+celery
+redis
+yt-dlp
+boto3
