@@ -14,10 +14,12 @@ celery_app.conf.update(
 
     worker_direct=True,
     broker_transport_options={
+        'queue_name_prefix': '{celery}',
         'fanout_prefix': True,
         'fanout_patterns': True,
     },
     result_backend_transport_options={
+        'queue_name_prefix': '{celery}',
         'fanout_prefix': True,
         'fanout_patterns': True,
     }
