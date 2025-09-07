@@ -10,7 +10,7 @@ S3_BUCKET_NAME = "video-downloader-bucket"
 celery_app = Celery('tasks', broker=REDIS_URL, backend=REDIS_URL)
 
 celery_app.conf.update(
-    task_routes = {'tasks.*': {'queue': '{celery}-queue'}},
+    worker_enable_remote_control=False,
 
     worker_direct=True,
     broker_transport_options={
