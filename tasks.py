@@ -9,6 +9,16 @@ S3_BUCKET_NAME = "video-downloader-bucket"
 
 celery_app = Celery('tasks', broker=REDIS_URL, backend=REDIS_URL)
 
+celery_app.conf.update(
+    worker_enable_remote_control=False,
+    worker_send_task_events=False,
+    broker_transport_options={
+        'visibility_timeout': 3600,
+        'fanout_prefix': True,
+        'fanout_patterns': True,
+    }
+)
+
 @celery_app.task(name='tasks.download_video')
 def download_video_task(video_url):
     # We will download the file to a temporary location on the server
