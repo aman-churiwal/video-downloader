@@ -4,10 +4,15 @@ import boto3
 from celery import Celery
 
 # Use your ElastiCache Primary Endpoint here
-REDIS_URL = "redis://video-downloader-redis-avlitx.serverless.aps1.cache.amazonaws.com:6379"
+REDIS_URL = "rediss://video-downloader-redis-avlitx.serverless.aps1.cache.amazonaws.com:6379"
 S3_BUCKET_NAME = "video-downloader-bucket"
 
 celery_app = Celery('tasks', broker=REDIS_URL, backend=REDIS_URL)
+
+celery_app.conf.update(
+    broker_use_ssl={'ssl_cert_reqs': None},
+    redis_backend_use_ssl={'ssl_cert_reqs': None}
+)
 
 @celery_app.task(name='tasks.download_video')
 def download_video_task(video_url):
