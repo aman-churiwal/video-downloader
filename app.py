@@ -3,6 +3,7 @@ from tasks import download_video_task
 import boto3
 
 app = Flask(__name__)
+print("HERE")
 S3_BUCKET_NAME = "video-downloader-bucket"
 
 @app.route('/download', methods=['POST'])
