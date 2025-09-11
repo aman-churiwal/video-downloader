@@ -16,6 +16,7 @@ def start_download():
 
 @app.route('/status/<task_id>', methods=['GET'])
 def get_task_status(task_id):
+    print("@@@@REACHED HERE")
     task_result = download_video_task.AsyncResult(task_id)
     response = {'task_id': task_id, 'status': task_result.state}
 
