@@ -2,7 +2,7 @@
 
 This API allows you to download a video from a URL, store it on a server, and receive a temporary download link.
 
-**Base URL**: `http://<your-ec2-ip-address>:5000`
+**Base URL**: `http://43.205.113.20:5000`
 
 ---
 ### Endpoints
