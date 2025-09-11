@@ -17,9 +17,16 @@ celery_app.conf.update(
 @celery_app.task(name='tasks.download_video')
 def download_video_task(video_url):
     # We will download the file to a temporary location on the server
+    project_dir = "/home/ubuntu/video-downloader"
     temp_dir = "/tmp" 
     ydl_opts = {
         'outtmpl': os.path.join(temp_dir, '%(id)s.%(ext)s'),
+        'format': 'best',
+        'noplaylist': True,
+        'cookiefile': os.path.join(project_dir, 'cookies.txt'),
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        }
     }
 
     try:
