@@ -1,10 +1,19 @@
 from flask import Flask, request, jsonify
 from tasks import download_video_task
 import boto3
+from botocore.config import Config
 
 app = Flask(__name__)
-print("HERE")
-S3_BUCKET_NAME = "video-downloader-bucket"
+S3_BUCKET_NAME = "video-downloader-bucket-aman-vd-1"
+
+s3_client = boto3.client(
+    's3',
+    region_name='ap-south-1',
+    config=Config(
+        signature_version='s3v4',
+        s3={'addressing_style': 'path'}
+    )
+)
 
 @app.route('/download', methods=['POST'])
 def start_download():
@@ -16,21 +25,21 @@ def start_download():
 
 @app.route('/status/<task_id>', methods=['GET'])
 def get_task_status(task_id):
-    print("@@@@REACHED HERE")
     task_result = download_video_task.AsyncResult(task_id)
     response = {'task_id': task_id, 'status': task_result.state}
 
     if task_result.state == 'SUCCESS':
         s3_key = task_result.result.get('s3_key')
-        # Generate a temporary, secure link to the file in S3
-        s3_client = boto3.client('s3')
         download_url = s3_client.generate_presigned_url(
             'get_object',
             Params={'Bucket': S3_BUCKET_NAME, 'Key': s3_key},
-            ExpiresIn=3600  # Link is valid for 1 hour
+            ExpiresIn=3600
         )
         response['download_url'] = download_url
     elif task_result.state == 'FAILURE':
-        response['result'] = str(task_result.info) # Include error info
+        response['result'] = str(task_result.info)
 
     return jsonify(response)
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

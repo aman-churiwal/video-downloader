@@ -3,9 +3,8 @@ import yt_dlp
 import boto3
 from celery import Celery
 
-# Use your ElastiCache Primary Endpoint here
-REDIS_URL = "redis://redis-server-vd-1.avlitx.ng.0001.aps1.cache.amazonaws.com:6379"
-S3_BUCKET_NAME = "video-downloader-bucket"
+REDIS_URL = "redis://localhost:6379/1"
+S3_BUCKET_NAME = "video-downloader-bucket-aman-vd-1"
 
 celery_app = Celery('tasks', broker=REDIS_URL, backend=REDIS_URL)
 
@@ -17,8 +16,8 @@ celery_app.conf.update(
 @celery_app.task(name='tasks.download_video')
 def download_video_task(video_url):
     # We will download the file to a temporary location on the server
-    project_dir = "/home/ubuntu/video-downloader"
-    temp_dir = "/tmp" 
+    project_dir = os.path.dirname(os.path.abspath(__file__))
+    temp_dir = os.path.join(project_dir, "downloads")
     ydl_opts = {
         'outtmpl': os.path.join(temp_dir, '%(id)s.%(ext)s'),
         'format': 'best',
